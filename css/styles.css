@@ -27,7 +27,7 @@ body{
 }
 
 .side-image{
-    background-image: url(/images/bg-1.jpg);
+    background-image: url(../images/bg-1.jpg);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -179,6 +179,10 @@ span a:hover{
         max-width: 420px;
         width: 100%;
     }
+}
+
+.alert{
+    color: red;
 }
 
 /*
