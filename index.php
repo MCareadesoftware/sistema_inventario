@@ -1,3 +1,63 @@
+<?php
+
+if (!empty($_SESSION['active'])) {
+    header('location: sistema/');
+} else {
+
+    if (!empty($_POST)) {
+
+
+        echo '<pre>';
+        var_dump($_POST);
+        echo '</pre>';
+
+        require "conexion.php";
+
+        $conection = conectarBD();
+
+        $user = mysqli_real_escape_string($conection, $_POST['usuario']);
+        $pass = mysqli_real_escape_string($conection, $_POST['clave']);
+
+
+        $query = "SELECT * FROM usuario WHERE usuario = '{$user}' AND clave = '{$pass}'";
+
+        $query_result = mysqli_query($conection, $query);
+
+        $result = mysqli_num_rows($query_result);
+
+        echo '<pre>';
+        var_dump($result);
+        echo '</pre>';
+
+        if ($result) {
+
+            echo "Si exite";
+
+            echo '<pre>';
+            var_dump($result);
+            echo '</pre>';
+
+            $data = mysqli_fetch_assoc($query_result);
+            $_SESSION['active'] = true;
+            $_SESSION['usuario_id'] = $data['usuario_id'];
+            $_SESSION['nombre'] = $data['nombre'];
+            $_SESSION['email'] = $data['correo'];
+            $_SESSION['user'] = $data['usuario'];
+            $_SESSION['rol_id'] = $data['rol_id'];
+
+
+            session_start();
+            header('location: sistema/');
+        } else {
+            $alert = 'Usuario o clave incorrecto';
+            session_destroy();
+        }
+
+
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -60,23 +120,23 @@
                     </div>
                 </div>
                 <div class="col-md-6 right">
-                    <div class="input-box">
+                <form class="input-box" method="POST" action="#">
                         <header>Iniciar Sesión</header>
                         <div class="input-field">
-                            <input type="text" name="" id="email" class="input" required autocomplete = "off">
+                            <input type="text" name="usuario" id="email" class="input" required autocomplete="off">
                             <label for="email">Usuario</label>
                         </div>
                         <div class="input-field">
-                            <input type="password" name="" id="password" class="input" required>
+                            <input type="password" name="clave" id="password" class="input" required>
                             <label for="password">Contraseña</label>
                         </div>
                         <div class="input-field">
-                            <input type="submit" name="" id="" class="submit" value="Iniciar Sesión">
+                            <input type="submit" id="" class="submit" value="INGRESAR">
                         </div>
                         <div class="signin">
                             <span>Olvidaste tu contraseña <a href="#">Comunicarse con Soporte</a></span>
                         </div>
-                    </div>
+                    </form>
                     
                 </div>
             </div>
