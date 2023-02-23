@@ -10,6 +10,7 @@
     <section id="container">
     <h1>Lista de usuarios</h1>
         <a href="registro_usuario.php" class="btn_new">Crear Usuario</a>
+        <!-- Cabecera de la tabla -->
         <table>
             <tr>
                 <th>ID</th>
@@ -27,6 +28,7 @@
                 $result_register = mysqli_fetch_array($sql_register);
                 $total_registro = $result_register['total_registro'];
 
+                // Cantidad de elementos por pagina
                 $por_pagina = 5;
 
                 if(empty($_GET['pagina']))

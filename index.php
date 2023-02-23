@@ -1,18 +1,23 @@
 <?php
 $alert = '';
+// Inicia la sesion
 session_start();
 if(!empty($_SESSION['active']))
 {
+    // Si está logeado, redirige directamente al inicio
     header('location: sistema/');
 }else{
+    // Si no está logeado, muestra el login
     if(!empty($_POST))
     {
         if(empty($_POST['usuario']) || empty($_POST['clave']))
         {
+            // Si los campos están vacíos, pide user y pass
             $alert = 'Ingrese usuario y contraseña';
         }else{
             require_once "conexion.php";
 
+            // Llama y verifica los datos del login del SQL
             $user = mysqli_real_escape_string($conection,$_POST['usuario']);
             $pass = md5(mysqli_real_escape_string($conection,$_POST['clave']));
 
@@ -21,6 +26,7 @@ if(!empty($_SESSION['active']))
 
             if($result > 0)
             {
+                // Si los datos del login son correctos, inicia sesión y llama todos los datos de ese usuario
                 $data = mysqli_fetch_array($query);
                 session_start();
                 $_SESSION['active'] = true;
@@ -30,8 +36,10 @@ if(!empty($_SESSION['active']))
                 $_SESSION['user'] = $data['usuario'];
                 $_SESSION['rol'] = $data['rol'];
 
+                // Redirige al inicio
                 header('location: sistema/');
             }else{
+                // Si los datos del login son incorrectos, muestra este mensaje y no comienza la sesión
                 $alert = 'Usuario o clave incorrecto';
                 session_destroy();
             }
@@ -46,11 +54,12 @@ if(!empty($_SESSION['active']))
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Sistema Facturación</title>
+    <!-- Estilos / Bootstrap -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
+    <!-- Pantalla de inicio de sesion -->
     <div class="wrapper">
         <div class="container main">
             <div class="row shadow">
@@ -61,6 +70,7 @@ if(!empty($_SESSION['active']))
                         <p>Siendo parte del cambio.</p>
                     </div>
                 </div>
+                <!-- Formulario de inicio de sesion -->
                 <form action="" method="post" class="col-md-6 right">
                     <div class="input-box">
                         <header>Iniciar Sesión</header>
@@ -82,7 +92,6 @@ if(!empty($_SESSION['active']))
                             <span>Olvidaste tu contraseña <a href="#">Comunicarse con Soporte</a></span>
                         </div>
                     </div>
-                    
                 </form>
             </div>
         </div>
