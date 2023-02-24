@@ -17,11 +17,12 @@ if(!empty($_SESSION['active']))
         }else{
             require_once "conexion.php";
 
-            // Llama y verifica los datos del login del SQL
+            // Asigna los datos ingresados a variables, la clave se encripta
             $user = mysqli_real_escape_string($conection,$_POST['usuario']);
             $pass = md5(mysqli_real_escape_string($conection,$_POST['clave']));
 
-            $query = mysqli_query($conection, "SELECT * FROM usuario WHERE usuario = '$user' AND clave = '$pass'");
+            // Verificación de los datos del login en la base de datos
+            $query = mysqli_query($conection, "CALL sp_inicio_sesion('$user','$pass');");
             $result = mysqli_num_rows($query);
 
             if($result > 0)

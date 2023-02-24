@@ -2,14 +2,9 @@
 include "../conexion.php";
 if(!empty($_POST))
 {
-    if($_POST["idusuario"]) {
-        header('location: lista_usuarios.php');
-        exit;
-    }
     $idusuario = $_POST['idusuario'];
 
-    //$query_delete = mysqli_query($conection, "DELETE FROM usuario WHERE idusuario = $idusuario");
-    $query_delete = mysqli_query($conection, "UPDATE usuario SET estatus = 0 WHERE idusuario = $idusuario");
+    $query_delete = mysqli_query($conection, "CALL sp_eliminar_usuario($idusuario)");
 
     if($query_delete){
         header('location: lista_usuarios.php');

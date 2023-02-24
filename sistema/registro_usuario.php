@@ -15,14 +15,14 @@ if(!empty($_POST))
         $clave = md5($_POST['clave']);
         $rol = $_POST['rol'];
 
-        $query = mysqli_query($conection, "SELECT * FROM usuario WHERE usuario = '$user' OR correo = '$email'");
+        $query = mysqli_query($conection, "CALL sp_usuario_existente('$user','$email')");
         $result = mysqli_fetch_array($query);
 
         if($result > 0){
             $alert = '<p>Usuario existente</p>';
         }else{
-            $query_insert = mysqli_query($conection,"INSERT INTO usuario(nombre, correo, usuario,clave,rol)
-            VALUES('$nombre','$email','$user','$clave','$rol')");
+            $query_insert = mysqli_query($conection,
+                "CALL sp_registro_usuario('$nombre','$email','$user','$clave','$rol')");
 
             if($query_insert){
                 $alert='<p>Usuario creado</p>';
@@ -60,9 +60,8 @@ if(!empty($_POST))
                 <label for="rol">Tipo Usuario</label>
 
                 <?php
-                $query_rol = mysqli_query($conection,"SELECT * FROM rol");
+                $query_rol = mysqli_query($conection,"CALL sp_rol");
                 $result_rol = mysqli_num_rows($query_rol);
-
                 ?>
 
                 <select name="rol" id="rol">

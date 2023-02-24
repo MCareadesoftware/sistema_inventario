@@ -16,9 +16,7 @@ if(!empty($_POST))
         $clave = md5($_POST['clave']);
         $rol = $_POST['rol'];
 
-        $query = mysqli_query($conection, "SELECT * FROM usuario 
-                                                    WHERE (usuario = '$user' AND idusuario != '$idUsuario')
-                                                    OR (correo = '$email' AND idusuario != '$idUsuario')");
+        $query = $this->$conection->query("CALL sp_editar_comparar('$user','$email',$idUsuario)");
         $result = mysqli_fetch_array($query);
 
         if($result > 0){
@@ -26,10 +24,8 @@ if(!empty($_POST))
         }else{
             if(empty($_POST['clave']))
             {
-                $sql_update = mysqli_query($conection,"UPDATE usuario
-                                                        SET nombre = '$nombre', correo='$email',usuario='$user',
-                                                        rol='$rol'
-                                                        WHERE idusuario = '$idUsuario'");
+                $sql_update = mysqli_query($conection,
+                "CALL sp_editar_cambio_sin_clave('$nombre','$email','$user','$rol',$idUsuario)");
             }else{
                 $sql_update = mysqli_query($conection,"UPDATE usuario
                                                         SET nombre = '$nombre', correo='$email',usuario='$user',
