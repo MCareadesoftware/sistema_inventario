@@ -16,7 +16,9 @@ if(!empty($_POST))
         $clave = md5($_POST['clave']);
         $rol = $_POST['rol'];
 
-        $query = $this->$conection->query("CALL sp_editar_comparar('$user','$email',$idUsuario)");
+        $query = mysqli_query($conection, "SELECT * FROM usuario
+                                                    WHERE (usuario = '$user' AND idusuario != '$idUsuario')
+                                                    OR (correo = '$email' AND idusuario != '$idUsuario')");
         $result = mysqli_fetch_array($query);
 
         if($result > 0){
@@ -27,10 +29,8 @@ if(!empty($_POST))
                 $sql_update = mysqli_query($conection,
                 "CALL sp_editar_cambio_sin_clave('$nombre','$email','$user','$rol',$idUsuario)");
             }else{
-                $sql_update = mysqli_query($conection,"UPDATE usuario
-                                                        SET nombre = '$nombre', correo='$email',usuario='$user',
-                                                        clave='$clave',rol='$rol'
-                                                        WHERE idusuario = '$idUsuario'");
+                $sql_update = mysqli_query($conection,
+                "CALL sp_editar_cambio_con_clave('$nombre','$email','$user','$clave','$rol',$idUsuario)");
             }
 
             if($sql_update){
@@ -106,9 +106,8 @@ if($result_sql == 0){
                 <label for="rol">Tipo Usuario</label>
 
                 <?php
-                $query_rol = mysqli_query($conection,"SELECT * FROM rol");
+                $query_rol = mysqli_query($conection,"CALL sp_rol");
                 $result_rol = mysqli_num_rows($query_rol);
-
                 ?>
 
                 <select name="rol" id="rol" class="notItemOne">

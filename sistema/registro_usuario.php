@@ -4,23 +4,27 @@ include "../conexion.php";
 if(!empty($_POST))
 {
     $alert = '';
-    if(empty($_POST['nombre']) || empty($_POST['correo']) || empty($_POST['usuario']) || empty($_POST['clave']) || empty($_POST['rol']))
+    // Verifica si todos los campos poseen datos
+    if(empty($_POST['nombre']) || empty($_POST['correo']) || empty($_POST['usuario']) ||
+    empty($_POST['clave']) || empty($_POST['rol']))
     {
         $alert = '<p class="msg_error">Todos los campos son obligatorios</p>';
     }else{
-
+        // Asigna los datos ingresados a variables
         $nombre = $_POST['nombre'];
         $email = $_POST['correo'];
         $user = $_POST['usuario'];
         $clave = md5($_POST['clave']);
         $rol = $_POST['rol'];
 
+        // Verifica que no exista el usuario o correo ingresado
         $query = mysqli_query($conection, "CALL sp_usuario_existente('$user','$email')");
         $result = mysqli_fetch_array($query);
 
         if($result > 0){
             $alert = '<p>Usuario existente</p>';
         }else{
+            // Registra los datos en la base de datos
             $query_insert = mysqli_query($conection,
                 "CALL sp_registro_usuario('$nombre','$email','$user','$clave','$rol')");
 
@@ -59,6 +63,7 @@ if(!empty($_POST))
                 <input type="password" name="clave" id="clave" placeholder="Clave de acceso">
                 <label for="rol">Tipo Usuario</label>
 
+                <!-- Opciones de roles -->
                 <?php
                 $query_rol = mysqli_query($conection,"CALL sp_rol");
                 $result_rol = mysqli_num_rows($query_rol);

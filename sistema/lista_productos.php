@@ -25,10 +25,12 @@
                 $sum_precio = 0;
                 $sum_precio_total = 0;
 
+                // Determina la cantidad total de categorias registradas
                 $sql_register = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM categoria");
                 $result_register = mysqli_fetch_array($sql_register);
                 $total_registro = $result_register['total_registro'];
 
+                // Recolecta informacion de la tabla categorias
                 $query = mysqli_query($conection,"SELECT c.codcategoria, c.descripcion, c.unidades, c.precio
                                                     FROM categoria c
                                                     ORDER BY codcategoria ASC");
@@ -36,11 +38,13 @@
                 $result = mysqli_num_rows($query);
                 if($result > 0){
                     while ($data = mysqli_fetch_array($query)) {
+                        // Realiza la suma de los datos numéricos de las categorías
                         $sum_unidades += $data["unidades"];
                         $sum_precio += $data["precio"];
                         $sum_precio_total += $data["unidades"] * $data["precio"];
             ?>
             <tr>
+                <!-- Mostrar datos de categoría -->
                 <td><?php echo $data["codcategoria"] ?></td>
                 <td><?php echo $data["descripcion"] ?></td>
                 <td><?php echo $data["unidades"] ?></td>
@@ -52,6 +56,7 @@
                 }
             ?>
             <tr>
+                <!-- Fila del total -->
                 <td>Total</td>
                 <td></td>
                 <td><?php echo $sum_unidades ?></td>
@@ -72,6 +77,7 @@
         <script>
             const ctxD = document.getElementById('myChartDonut');
 
+            // Gráfico de donut sobre el valor total de cada categoría
             new Chart(ctxD, {
                 type: 'doughnut',
                 data: {
@@ -114,6 +120,7 @@
         <script>
             const ctxB = document.getElementById('myChartBar');
 
+            // Gráfico de barras sobre la cantidad de stock de cada categoría
             new Chart(ctxB, {
                 type: 'bar',
                 data: {
@@ -124,22 +131,22 @@
 
                         $result = mysqli_num_rows($query);
                         if($result > 0){
-                        while ($data = mysqli_fetch_array($query)) {
-                            ?>'<?php echo $data["descripcion"]; ?>',<?php
-                        }} ?>
+                            while ($data = mysqli_fetch_array($query)) {
+                                ?>'<?php echo $data["descripcion"]; ?>',<?php
+                            }
+                        } ?>
                     ],
                     datasets: [{
                     label: ' Unidades en stock',
                     data: [<?php
-                        $query = mysqli_query($conection,"SELECT c.codcategoria, c.descripcion, c.unidades, c.precio
-                        FROM categoria c
-                        ORDER BY codcategoria ASC");
+                        $query = mysqli_query($conection,"CALL sp_mostrar_lista_productos");
 
                         $result = mysqli_num_rows($query);
                         if($result > 0){
-                        while ($data = mysqli_fetch_array($query)) {
-                            echo $data["unidades"]; ?>,<?php
-                        }} ?>
+                            while ($data = mysqli_fetch_array($query)) {
+                                echo $data["unidades"]; ?>,<?php
+                            }
+                        } ?>
                     ],
                     borderWidth: 1
                     }]
